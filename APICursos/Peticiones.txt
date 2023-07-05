@@ -1,0 +1,170 @@
+LIST:
+query {
+  allGrades {
+    codigoMatricula
+    codigoAlumno
+    nombresAlumno
+    apellidosAlumno
+    curso {
+      codigoCurso
+      nombreCurso
+      idProfesor
+      nota
+    }
+  }
+}
+
+
+Buscarid:
+query {
+  gradeById(id: "646efd0674891c54ed345228") {
+    codigoMatricula
+    codigoAlumno
+    nombresAlumno
+    apellidosAlumno
+    curso {
+      codigoCurso
+      nombreCurso
+      thCurso
+      creditos
+      preRequisitoCurso
+      idProfesor
+      nota
+    }
+  }
+}
+
+BuscarPorMatricula
+query {
+  gradeByCodigoMatricula(codigoMatricula: "1") {
+    codigoMatricula
+    codigoAlumno
+    nombresAlumno
+    apellidosAlumno
+    curso {
+      codigoCurso
+      nombreCurso
+      thCurso
+      creditos
+      preRequisitoCurso
+      idProfesor
+      nota
+    }
+  }
+}
+
+
+CREATE:
+mutation {
+  createGrade(
+    codigoMatricula: "3",
+    codigoAlumno: "2020066321",
+    nombresAlumno: "peres xd",
+    apellidosAlumno: "Mamani Lima",
+    curso: [
+      {
+        codigoCurso: "EG-525",
+        nombreCurso: "Progra Web I",
+        thCurso: "4",
+        creditos: "3",
+        preRequisitoCurso: "EG-181",
+        idProfesor: "15654",
+        nota: "14"
+      },
+      {
+        codigoCurso: "EG-526",
+        nombreCurso: "Progra Web II",
+        thCurso: "4",
+        creditos: "3",
+        preRequisitoCurso: "EG-525",
+        idProfesor: "15655",
+        nota: "15"
+      },
+    ]
+  ) {
+    grade {
+      codigoMatricula
+      codigoAlumno
+      nombresAlumno
+      apellidosAlumno
+      curso {
+        codigoCurso
+        nombreCurso
+        thCurso
+        creditos
+        preRequisitoCurso
+        idProfesor
+        nota
+      }
+    }
+  }
+}
+
+UPDATE:
+mutation {
+  updateGrade(
+    id: "646ee60f58b35ed90143d214"  # ID del grado a actualizar
+    codigoMatricula: "1"  # Campos a actualizar
+    nombresAlumno: "Erick Mauricio"
+    cursoAdd: [
+      { codigoCurso: "EG-527", 
+        nombreCurso: "Progra Web III", 
+        thCurso: "4", 
+        creditos: "3", 
+        preRequisitoCurso: "EG-526", 
+        idProfesor: "15656", 
+        nota: "16" }
+    ]  # Cursos a agregar
+    cursoRemove: ["EG-525"]  
+  ) {
+    grade {
+      id
+      codigoMatricula
+      codigoAlumno
+      nombresAlumno
+      apellidosAlumno
+      curso {
+        codigoCurso
+        nombreCurso
+        thCurso
+        creditos
+        preRequisitoCurso
+        idProfesor
+        nota
+      }
+    }
+  }
+}
+UPDATE CURSO IN GRADE:
+mutation {
+  updateCursoingrade(id: "646ee60f58b35ed90143d214", 
+    index: 1, data: {
+        nombreCurso: "Progra Web I", 
+      }) {
+    grade {
+      id
+      codigoMatricula
+      codigoAlumno
+      nombresAlumno
+      apellidosAlumno
+      curso {
+        codigoCurso
+        nombreCurso
+        thCurso
+        creditos
+        preRequisitoCurso
+        idProfesor
+        nota
+      }
+    }
+  }
+}
+
+
+
+DELETE:
+mutation{
+  deleteGrade(id:"646f035e3559d0b2c9ecec2e"){
+    success
+  }
+}

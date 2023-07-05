@@ -1,0 +1,84 @@
+version: '3.9'
+services:
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  elasticsearch:
+    hostname: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+  db:
+        container_name: db
+        image: mysql
+        restart: always
+        command: --secure-file-priv="" 
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - ./db-data:/var/lib/mysql 
+        ports:
+            - "9906:3306"
+  auditoria:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - RabbitMQ__HostName=rabbitmq
+      - Elasticsearch__Uri=http://elasticsearch:9200
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+    restart: on-failure
+  cursos:
+    build:
+      context: .
+      dockerfile: ./IntranetCursos/Dockerfile
+    depends_on:
+      - rabbitmq
+      - db
+    restart: on-failure
+    ports:
+      - "8000:8000"
+  apicursos:
+    build:
+      context: .
+      dockerfile: ./APICursos/Dockerfile
+    volumes:
+      - ./APICursos/:/app
+    working_dir: /app
+    depends_on:
+      - rabbitmq
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1
+    ports:
+      - 5000:5000
+    command: flask run --host=0.0.0.0
+
+volumes:
+  esdata1:
+    driver: local
