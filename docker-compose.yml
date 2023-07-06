@@ -100,7 +100,7 @@ services:
       - smallrye.messaging.source.logs.port=5672
       - smallrye.messaging.source.logs.username=guest
       - smallrye.messaging.source.logs.password=guest
-  
+      
   #deuda:
   #  build:
   #    context: .
@@ -108,13 +108,14 @@ services:
   #  ports:
   #    - "8090:8090"
   #  restart: on-failure
+
   usuario:
     build:
       context: .
       dockerfile: Usuarios/Dockerfile
     ports:
       - 8070:8070
-
+    
   
 
 

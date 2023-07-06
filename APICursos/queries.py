@@ -9,8 +9,7 @@ def resolve_allGrades(self, info):
     # Obtener todos los registros de la base de datos
     grades = collectionGrades.find()
     grades_message=list(grades)
-    grades_message2=list(grades)
-    rabbitmqMessage(f"Total grades found: {len(grades_message2)}", "all_grades")
+    rabbitmqMessage(f"Total grades found: {len(grades_message)}", "all_grades")
     return [Grade(
         id=str(grade['_id']),  # Agregar el campo 'id' con el valor del _id de MongoDB
         codigoMatricula=grade['codigoMatricula'],
