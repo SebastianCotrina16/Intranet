@@ -78,6 +78,45 @@ services:
     ports:
       - 5000:5000
     command: flask run --host=0.0.0.0
+  matricula:
+    build:
+      context: .
+      dockerfile: ./Matricula/Dockerfile.jvm
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rabbitmq
+    environment:
+      - LANGUAGE='en_US:en'
+      - rabbitmq-host=rabbitmq
+      - rabbitmq-port=5672
+      - rabbitmq-username=guest
+      - rabbitmq-password=guest
+      - mp.messaging.outgoing.quarkus-rabbitmq.connector=smallrye-rabbitmq
+      - mp.messaging.outgoing.quarkus-rabbitmq.destination=logs
+      - smallrye.messaging.source.logs.connector=smallrye-rabbitmq
+      - smallrye.messaging.source.logs.queue=logs
+      - smallrye.messaging.source.logs.host=rabbitmq
+      - smallrye.messaging.source.logs.port=5672
+      - smallrye.messaging.source.logs.username=guest
+      - smallrye.messaging.source.logs.password=guest
+  
+  #deuda:
+  #  build:
+  #    context: .
+  #    dockerfile: ./Deuda/Dockerfile.jvm
+  #  ports:
+  #    - "8090:8090"
+  #  restart: on-failure
+  usuario:
+    build:
+      context: .
+      dockerfile: Usuarios/Dockerfile
+    ports:
+      - 8070:8070
+
+  
+
 
 volumes:
   esdata1:

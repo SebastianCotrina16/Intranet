@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  quarkus-app:
+    build:
+      context: .
+      dockerfile: ./Matricula/Dockerfile.jvm
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rabbitmq
+    environment:
+      - LANGUAGE='en_US:en'
+      - rabbitmq-host=rabbitmq
+      - rabbitmq-port=5672
+      - rabbitmq-username=guest
+      - rabbitmq-password=guest
+      - mp.messaging.outgoing.quarkus-rabbitmq.connector=smallrye-rabbitmq
+      - mp.messaging.outgoing.quarkus-rabbitmq.destination=logs
+      - smallrye.messaging.source.logs.connector=smallrye-rabbitmq
+      - smallrye.messaging.source.logs.queue=logs
+      - smallrye.messaging.source.logs.host=rabbitmq
+      - smallrye.messaging.source.logs.port=5672
+      - smallrye.messaging.source.logs.username=guest
+      - smallrye.messaging.source.logs.password=guest
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
